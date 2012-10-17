@@ -21,7 +21,6 @@ public class MainActivity extends Activity {
         Carousel carousel = (Carousel)findViewById(R.id.carousel);
         carousel.setOnItemClickListener(new OnItemClickListener(){
 
-			@Override
 			public void onItemClick(CarouselAdapter<?> parent, View view,
 					int position, long id) {	
 				
@@ -35,7 +34,6 @@ public class MainActivity extends Activity {
 
         carousel.setOnItemSelectedListener(new OnItemSelectedListener(){
 
-			@Override
 			public void onItemSelected(CarouselAdapter<?> parent, View view,
 					int position, long id) {
 				
@@ -64,7 +62,6 @@ public class MainActivity extends Activity {
 				
 			}
 
-			@Override
 			public void onNothingSelected(CarouselAdapter<?> parent) {
 			}
         	

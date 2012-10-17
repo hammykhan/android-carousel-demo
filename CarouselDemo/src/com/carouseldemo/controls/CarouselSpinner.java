@@ -56,12 +56,10 @@ public abstract class CarouselSpinner extends CarouselAdapter<SpinnerAdapter> {
     }    
            
     
-	@Override
 	public SpinnerAdapter getAdapter() {
         return mAdapter;
     }
 
-	@Override
 	public void setAdapter(SpinnerAdapter adapter) {
         if (null != mAdapter) {
             mAdapter.unregisterDataSetObserver(mDataSetObserver);
@@ -102,7 +100,6 @@ public abstract class CarouselSpinner extends CarouselAdapter<SpinnerAdapter> {
 		
 	}
 
-    @Override
     public View getSelectedView() {
         if (mItemCount > 0 && mSelectedPosition >= 0) {
             return getChildAt(mSelectedPosition - mFirstPosition);
@@ -141,7 +138,6 @@ public abstract class CarouselSpinner extends CarouselAdapter<SpinnerAdapter> {
     
     abstract void layout(int delta, boolean animate);    
 
-	@Override
 	public void setSelection(int position) {
         setSelectionInt(position, false);
 	}
@@ -170,7 +166,6 @@ public abstract class CarouselSpinner extends CarouselAdapter<SpinnerAdapter> {
      * UNSPECIFIED. The height is based on the height of the selected item
      * plus padding. 
      */
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize;
@@ -249,7 +244,6 @@ public abstract class CarouselSpinner extends CarouselAdapter<SpinnerAdapter> {
         return child.getMeasuredWidth();
     }
     
-    @Override
     protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         /*
          * Carousel expects Carousel.LayoutParams.

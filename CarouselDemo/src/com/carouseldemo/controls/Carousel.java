@@ -213,7 +213,7 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
 		setChildrenDrawingOrderEnabled(true);
 		
 		// Making user gestures available 
-		mGestureDetector = new GestureDetector(this);
+		mGestureDetector = new GestureDetector(this.getContext(), this);
 		mGestureDetector.setIsLongpressEnabled(true);
 		
 		// It's needed to apply 3D transforms to items
@@ -471,7 +471,7 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         // Gallery steals all key events
-        return event.dispatch(this);
+        return event.dispatch(this, null, null);
     }
         
     /**
@@ -526,8 +526,9 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
 		
 		// Translate the item to it's coordinates
 		final Matrix matrix = transformation.getMatrix();
-		mCamera.translate(((CarouselItem)child).getX(), ((CarouselItem)child).getY(), 
-							((CarouselItem)child).getZ());
+				
+		mCamera.translate(((CarouselItem)child).getItemX(), ((CarouselItem)child).getItemY(), 
+							((CarouselItem)child).getItemZ());
 				
 		// Align the item
 		mCamera.getMatrix(matrix);
@@ -544,7 +545,9 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
 		Matrix mm = new Matrix();
 		mm.setValues(values);
 		((CarouselItem)child).setCIMatrix(mm);
-		
+
+		//http://code.google.com/p/android/issues/detail?id=35178
+		child.invalidate();
 		return true;
 	}     
     
@@ -727,7 +730,7 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
             // Flip sign to convert finger direction to list items direction
             // (e.g. finger moving down means list is moving towards the top)
             float delta = mLastFlingAngle - angle;                        
-            
+
             //////// Shoud be reworked
             trackMotionScroll(delta);
             
@@ -881,8 +884,8 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
 	}	
 	
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-		
-        if (!mShouldCallbackDuringFling) {
+
+    	if (!mShouldCallbackDuringFling) {
             // We want to suppress selection changes
             
             // Remove any future code to set mSuppressSelectionChanged = false
@@ -893,6 +896,7 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
         }
         
         // Fling the gallery!
+        
         //mFlingRunnable.startUsingVelocity((int) -velocityX);
         mFlingRunnable.startUsingVelocity((int) velocityX);
         
@@ -979,14 +983,14 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
     private void Calculate3DPosition(CarouselItem child, int diameter, float angleOffset){
     	
     	angleOffset = angleOffset * (float)(Math.PI/180.0f);    	
-    	
-    	float x = - (float)(diameter/2  * Math.sin(angleOffset)) + diameter/2 - child.getWidth()/2;
-    	float z = diameter/2 * (1.0f - (float)Math.cos(angleOffset));
-    	float y = - getHeight()/2 + (float) (z * Math.sin(mTheta));
-    	
-    	child.setX(x);
-    	child.setZ(z);
-    	child.setY(y);
+
+    	float x = - (float)(diameter/2  * android.util.FloatMath.sin(angleOffset)) + diameter/2 - child.getWidth()/2;
+    	float z = diameter/2 * (1.0f - (float)android.util.FloatMath.cos(angleOffset));
+    	float y = - getHeight()/2 + (float) (z * android.util.FloatMath.sin(mTheta));
+
+    	child.setItemX(x);
+    	child.setItemZ(z);
+    	child.setItemY(y);
     	
     }
     	
@@ -1212,8 +1216,8 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
         	arr.add(((CarouselItem)getAdapter().getView(i, null, null)));
         
         Collections.sort(arr, new Comparator<CarouselItem>(){
-			@Override
-			public int compare(CarouselItem c1, CarouselItem c2) {
+
+        	public int compare(CarouselItem c1, CarouselItem c2) {
 				int a1 = (int)c1.getCurrentAngle();
 				if(a1 > 180)
 					a1 = 360 - a1;
@@ -1382,15 +1386,21 @@ public class Carousel extends CarouselSpinner implements GestureDetector.OnGestu
         }
                 
         for(int i = 0; i < getAdapter().getCount(); i++){
+        	
         	CarouselItem child = (CarouselItem)getAdapter().getView(i, null, null);
+        	
         	float angle = child.getCurrentAngle();
         	angle += deltaAngle;
+        	
         	while(angle > 360.0f)
         		angle -= 360.0f;
+        	
         	while(angle < 0.0f)
         		angle += 360.0f;
+        	
         	child.setCurrentAngle(angle);
-            Calculate3DPosition(child, getWidth(), angle);        	
+            Calculate3DPosition(child, getWidth(), angle);
+            
         }
         
         // Clear unused views

@@ -20,9 +20,9 @@ public class CarouselItem extends FrameLayout
 	
 	private int index;
 	private float currentAngle;
-	private float x;
-	private float y;
-	private float z;
+	private float itemX;
+	private float itemY;
+	private float itemZ;
 	private boolean drawn;	
 
 	// It's needed to find screen coordinates
@@ -74,31 +74,31 @@ public class CarouselItem extends FrameLayout
 	}
 
 	public int compareTo(CarouselItem another) {
-		return (int)(another.z - this.z);
+		return (int)(another.itemZ - this.itemZ);
 	}
 
-	public void setX(float x) {
-		this.x = x;
+	public void setItemX(float x) {
+		this.itemX = x;
 	}
 
-	public float getX() {
-		return x;
+	public float getItemX() {
+		return itemX;
 	}
 
-	public void setY(float y) {
-		this.y = y;
+	public void setItemY(float y) {
+		this.itemY = y;
 	}
 
-	public float getY() {
-		return y;
+	public float getItemY() {
+		return itemY;
 	}
 
-	public void setZ(float z) {
-		this.z = z;
+	public void setItemZ(float z) {
+		this.itemZ = z;
 	}
 
-	public float getZ() {
-		return z;
+	public float getItemZ() {
+		return itemZ;
 	}
 
 	public void setDrawn(boolean drawn) {
